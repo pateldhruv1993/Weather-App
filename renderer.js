@@ -8,13 +8,54 @@ var request = require("request");
 var weatherAppName = "WeatherApp";
 var weatherAPIKey = "ac227c1e34322afc4342d9a7c15607c5";
 
+var settingsFormStatus = 1;
+var maxPossibleHeight = 77;
+var city = "Brampton";
+var countryOrState = "Ontario";
 
-getWeatherData("Canada", "Brampton");
+setInterval(getWeatherData, 90000);
+
+document.getElementById("settingsButton").addEventListener("click", function () {
+    console.log("click event listener called!");
+    var elem = document.getElementById("locationForm");
+    var id = setInterval(frame, 3);
+    var height = 0;
+    var status = settingsFormStatus;
+    if (settingsFormStatus == -1) {
+        height = maxPossibleHeight;
+        settingsFormStatus = 1;
+
+        // Get new city and countryOrState values
+        city = document.getElementById("cityField").value;
+        countryOrState = document.getElementById("countryOrStateField").value;
+        getWeatherData(city,countryOrState);
+    } else {
+        settingsFormStatus = -1;
+    }
+    
+    function frame() {
+        if (height == maxPossibleHeight && status == 1) {
+            clearInterval(id);
+        }
+        else if (height == 0 && status == -1) {
+            clearInterval(id);
+        }
+        else {
+            if (status == 1) {
+                height++;
+            } else {
+                height--;
+            }
+            document.getElementById("locationForm").style.height = height + 'px';
+        }
+    }
+});
 
 
-function getWeatherData(countryOrState, city) {
+function getWeatherData() {
 
     var apiUrl = "http://api.wunderground.com/api/a3577f9fbb7af416/conditions/q/" + countryOrState + "/" + city + ".json";
+    console.log(apiUrl);
 
     request({
         url: apiUrl,
@@ -27,8 +68,10 @@ function getWeatherData(countryOrState, city) {
                 var tempC = body.current_observation.temp_c;
                 console.log(tempC);
                 var tempF = body.current_observation.temp_f;
+                var iconName = body.current_observation.icon;
                 console.log(tempF);
-                document.getElementById("weatherTemp").innerText = tempC + "° C";
+                document.getElementById("weatherIcon").src = "./resources/" + iconName + ".png";
+                document.getElementById("weatherTemp").innerText = tempC + " °C";
                 document.getElementById("weatherLocation").innerText = location;
 
             } catch (err) {
@@ -41,3 +84,4 @@ function getWeatherData(countryOrState, city) {
     });
 
 }
+

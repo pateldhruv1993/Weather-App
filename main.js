@@ -18,7 +18,7 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   // x:1080, y:620, focusable: false,backgroundColor: '#50FFFFFF'
-  mainWindow = new BrowserWindow({width: 800, height: 600,frame: false, focusable: true,toolbar: true, transparent: true, alwaysOnTop: true})
+  mainWindow = new BrowserWindow({width: 213, height: 313, frame: false, minimizable: false, focusable: false,toolbar: false, transparent: true})
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -26,6 +26,7 @@ function createWindow () {
     slashes: true
   }))
 
+  
   const ret = globalShortcut.register('CommandOrControl+B', () => {
     console.log('CommandOrControl+B is pressed')
     mainWindow.send("keyboard-shortcut", "pressed");
